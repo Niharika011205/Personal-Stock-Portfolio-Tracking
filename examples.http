@@ -1,0 +1,242 @@
+### Stock Portfolio Tracker - API Examples
+### Base URL: http://localhost:8080/api
+
+### ============================================
+### USER MANAGEMENT
+### ============================================
+
+### Create a new user
+POST http://localhost:8080/api/users
+Content-Type: application/json
+
+{
+  "email": "investor@example.com",
+  "firstName": "John",
+  "lastName": "Investor",
+  "password": "securePassword123"
+}
+
+### Get user by ID
+GET http://localhost:8080/api/users/1
+
+### Get user by email
+GET http://localhost:8080/api/users/email/investor@example.com
+
+### ============================================
+### PORTFOLIO MANAGEMENT
+### ============================================
+
+### Create a new portfolio
+POST http://localhost:8080/api/portfolios?userId=1&name=My%20Portfolio&description=My%20personal%20investment%20portfolio
+Content-Type: application/json
+
+### Get all portfolios for a user
+GET http://localhost:8080/api/portfolios?userId=1
+
+### Get specific portfolio
+GET http://localhost:8080/api/portfolios/1?userId=1
+
+### Refresh portfolio prices
+PUT http://localhost:8080/api/portfolios/1/refresh-prices?userId=1
+
+### ============================================
+### TRANSACTIONS
+### ============================================
+
+### Create BUY transaction
+POST http://localhost:8080/api/transactions?portfolioId=1
+Content-Type: application/json
+
+{
+  "transactionType": "BUY",
+  "ticker": "AAPL",
+  "quantity": 10,
+  "price": 150.25,
+  "transactionDate": "2024-10-10T10:30:00",
+  "notes": "Initial Apple purchase"
+}
+
+### Create another BUY transaction
+POST http://localhost:8080/api/transactions?portfolioId=1
+Content-Type: application/json
+
+{
+  "transactionType": "BUY",
+  "ticker": "MSFT",
+  "quantity": 5,
+  "price": 380.50,
+  "transactionDate": "2024-10-11T14:15:00",
+  "notes": "Microsoft acquisition"
+}
+
+### Create SELL transaction
+POST http://localhost:8080/api/transactions?portfolioId=1
+Content-Type: application/json
+
+{
+  "transactionType": "SELL",
+  "ticker": "AAPL",
+  "quantity": 3,
+  "price": 165.75,
+  "transactionDate": "2024-10-12T09:45:00",
+  "notes": "Partial profit taking"
+}
+
+### Create DIVIDEND transaction
+POST http://localhost:8080/api/transactions?portfolioId=1
+Content-Type: application/json
+
+{
+  "transactionType": "DIVIDEND",
+  "ticker": "AAPL",
+  "quantity": 0.5,
+  "price": 0.23,
+  "transactionDate": "2024-10-13T15:00:00",
+  "notes": "Quarterly dividend"
+}
+
+### Get all transactions for a portfolio
+GET http://localhost:8080/api/transactions?portfolioId=1
+
+### Get transactions by date range
+GET http://localhost:8080/api/transactions/by-date-range?portfolioId=1&startDate=2024-10-01T00:00:00&endDate=2024-10-31T23:59:59
+
+### ============================================
+### ANALYTICS & REPORTING
+### ============================================
+
+### Generate portfolio analytics report
+GET http://localhost:8080/api/analytics/report/1
+
+### Response includes:
+# - Total portfolio value and cost
+# - Unrealized P&L
+# - Return percentage
+# - Asset allocation
+# - Top and worst performers
+# - Average cost per asset
+
+### Get portfolio history (last 30 days)
+GET http://localhost:8080/api/analytics/history/1?days=30
+
+### Get portfolio history (last 90 days)
+GET http://localhost:8080/api/analytics/history/1?days=90
+
+### Get portfolio history (last year)
+GET http://localhost:8080/api/analytics/history/1?days=365
+
+### ============================================
+### AI MARKET BRIEFING AGENT
+### ============================================
+
+### Generate market briefing with risk analysis
+GET http://localhost:8080/api/briefings/1
+
+### Response includes:
+# - Portfolio overview summary
+# - Risk assessment (LOW/MODERATE/HIGH)
+# - Key identified risks
+# - Actionable recommendations
+# - Performance highlights
+
+### ============================================
+### WORKFLOW EXAMPLES
+### ============================================
+
+### Example 1: Complete Portfolio Setup
+### Step 1: Create user
+POST http://localhost:8080/api/users
+Content-Type: application/json
+
+{
+  "email": "trader@example.com",
+  "firstName": "Jane",
+  "lastName": "Trader",
+  "password": "tradePassword456"
+}
+
+# Assume userId = 2 from response
+
+### Step 2: Create portfolio for user
+POST http://localhost:8080/api/portfolios?userId=2&name=Tech%20Growth&description=Technology%20focused%20portfolio
+
+# Assume portfolioId = 2 from response
+
+### Step 3: Add multiple transactions
+POST http://localhost:8080/api/transactions?portfolioId=2
+Content-Type: application/json
+
+{
+  "transactionType": "BUY",
+  "ticker": "TSLA",
+  "quantity": 20,
+  "price": 245.30,
+  "transactionDate": "2024-09-01T10:00:00"
+}
+
+POST http://localhost:8080/api/transactions?portfolioId=2
+Content-Type: application/json
+
+{
+  "transactionType": "BUY",
+  "ticker": "NVDA",
+  "quantity": 15,
+  "price": 875.50,
+  "transactionDate": "2024-09-05T11:30:00"
+}
+
+### Step 4: Get portfolio details
+GET http://localhost:8080/api/portfolios/2?userId=2
+
+### Step 5: Refresh prices (get current valuations)
+PUT http://localhost:8080/api/portfolios/2/refresh-prices?userId=2
+
+### Step 6: Generate analytics report
+GET http://localhost:8080/api/analytics/report/2
+
+### Step 7: Get market briefing
+GET http://localhost:8080/api/briefings/2
+
+### ============================================
+### ERROR HANDLING EXAMPLES
+### ============================================
+
+### Invalid email format (will return 400 error)
+POST http://localhost:8080/api/users
+Content-Type: application/json
+
+{
+  "email": "invalid-email",
+  "firstName": "Test",
+  "lastName": "User",
+  "password": "password123"
+}
+
+### Missing required field (will return 400 error)
+POST http://localhost:8080/api/users
+Content-Type: application/json
+
+{
+  "email": "test@example.com",
+  "firstName": "Test",
+  "password": "password123"
+}
+
+### Non-existent user (will return 400 error)
+GET http://localhost:8080/api/users/9999
+
+### Non-existent portfolio (will return 400 error)
+GET http://localhost:8080/api/portfolios/9999?userId=1
+
+### Insufficient quantity for sell (will return 400 error)
+POST http://localhost:8080/api/transactions?portfolioId=1
+Content-Type: application/json
+
+{
+  "transactionType": "SELL",
+  "ticker": "AAPL",
+  "quantity": 1000,
+  "price": 150.00,
+  "transactionDate": "2024-10-15T10:00:00",
+  "notes": "Trying to sell more than we own"
+}

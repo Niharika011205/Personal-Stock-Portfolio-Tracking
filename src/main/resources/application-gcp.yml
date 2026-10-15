@@ -1,0 +1,19 @@
+spring:
+  cloud:
+    gcp:
+      project-id: your-gcp-project-id
+  datasource:
+    url: jdbc:postgresql://your-cloud-sql-instance-ip:5432/portfolio_db
+    username: portfolio_user
+    password: ${DB_PASSWORD}
+    hikari:
+      maximum-pool-size: 5
+      minimum-idle: 1
+
+server:
+  port: 8080
+
+logging:
+  level:
+    root: WARN
+    com.portfolio: INFO

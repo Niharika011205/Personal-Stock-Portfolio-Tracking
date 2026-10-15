@@ -1,0 +1,14 @@
+runtime: java17
+
+env: standard
+
+entrypoint: exec java -Dspring.profiles.active=gcp -jar app.jar
+
+env_variables:
+  SPRING_DATASOURCE_URL: "jdbc:postgresql://CLOUD_SQL_CONNECTION_NAME/portfolio_db"
+  SPRING_DATASOURCE_USERNAME: "portfolio_user"
+  SPRING_JPA_HIBERNATE_DDL_AUTO: "validate"
+
+handlers:
+  - url: /.*
+    script: auto

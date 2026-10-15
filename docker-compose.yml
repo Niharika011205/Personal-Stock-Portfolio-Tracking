@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: portfolio-db
+    environment:
+      POSTGRES_DB: portfolio_db
+      POSTGRES_USER: portfolio_user
+      POSTGRES_PASSWORD: portfolio_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U portfolio_user -d portfolio_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - portfolio-network
+
+  app:
+    build: .
+    container_name: portfolio-app
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/portfolio_db
+      SPRING_DATASOURCE_USERNAME: portfolio_user
+      SPRING_DATASOURCE_PASSWORD: portfolio_password
+      SPRING_JPA_HIBERNATE_DDL_AUTO: validate
+    ports:
+      - "8080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - portfolio-network
+
+volumes:
+  postgres_data:
+
+networks:
+  portfolio-network:
+    driver: bridge
